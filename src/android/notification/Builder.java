@@ -44,6 +44,7 @@ import java.util.Random;
 
 import de.appplant.cordova.plugin.notification.action.Action;
 
+import static android.app.PendingIntent.FLAG_MUTABLE;
 import static android.app.PendingIntent.FLAG_UPDATE_CURRENT;
 import static de.appplant.cordova.plugin.notification.Notification.EXTRA_UPDATE;
 
@@ -373,8 +374,12 @@ public final class Builder {
 
         int reqCode = random.nextInt();
 
+        int flags = (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.S)
+        ? FLAG_UPDATE_CURRENT | FLAG_MUTABLE
+        : FLAG_UPDATE_CURRENT;
+
         PendingIntent deleteIntent = PendingIntent.getBroadcast(
-                context, reqCode, intent, FLAG_UPDATE_CURRENT);
+                context, reqCode, intent, flags);
 
         builder.setDeleteIntent(deleteIntent);
     }
@@ -402,8 +407,12 @@ public final class Builder {
 
         int reqCode = random.nextInt();
 
+        int flags = (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.S)
+        ? FLAG_UPDATE_CURRENT | FLAG_MUTABLE
+        : FLAG_UPDATE_CURRENT;
+
         PendingIntent contentIntent = PendingIntent.getService(
-                context, reqCode, intent, FLAG_UPDATE_CURRENT);
+                context, reqCode, intent, flags);
 
         builder.setContentIntent(contentIntent);
     }
@@ -444,7 +453,7 @@ public final class Builder {
                 .putExtra(Notification.EXTRA_ID, options.getId())
                 .putExtra(Action.EXTRA_ID, action.getId())
                 .putExtra(Options.EXTRA_LAUNCH, action.isLaunchingApp())
-                .setFlags(Intent.FLAG_ACTIVITY_NO_HISTORY);
+                .setFlags(Intent.FLAG_ACTIVITY_NO_HISTORY | FLAG_MUTABLE);
 
         if (extras != null) {
             intent.putExtras(extras);
@@ -452,8 +461,12 @@ public final class Builder {
 
         int reqCode = random.nextInt();
 
+        int flags = (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.S)
+        ? FLAG_UPDATE_CURRENT | FLAG_MUTABLE
+        : FLAG_UPDATE_CURRENT;
+
         return PendingIntent.getService(
-                context, reqCode, intent, FLAG_UPDATE_CURRENT);
+                context, reqCode, intent, flags);
     }
 
     /**

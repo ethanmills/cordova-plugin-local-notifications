@@ -48,6 +48,7 @@ import java.util.Set;
 import static android.app.AlarmManager.RTC;
 import static android.app.AlarmManager.RTC_WAKEUP;
 import static android.app.PendingIntent.FLAG_CANCEL_CURRENT;
+import static android.app.PendingIntent.FLAG_MUTABLE;
 import static android.os.Build.VERSION.SDK_INT;
 import static android.os.Build.VERSION_CODES.M;
 import static android.support.v4.app.NotificationCompat.PRIORITY_HIGH;
@@ -217,8 +218,12 @@ public final class Notification {
             if (!date.after(new Date()) && trigger(intent, receiver))
                 continue;
 
+            int flags = (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.S)
+                    ? FLAG_CANCEL_CURRENT | FLAG_MUTABLE
+                    : FLAG_CANCEL_CURRENT;
+
             PendingIntent pi = PendingIntent.getBroadcast(
-                    context, 0, intent, FLAG_CANCEL_CURRENT);
+                    context, 0, intent, flags);
 
             try {
                 switch (options.getPrio()) {
@@ -304,8 +309,12 @@ public final class Notification {
         for (String action : actions) {
             Intent intent = new Intent(action);
 
+            int flags = (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.S)
+                    ? FLAG_MUTABLE
+                    : 0;
+
             PendingIntent pi = PendingIntent.getBroadcast(
-                    context, 0, intent, 0);
+                    context, 0, intent, flags);
 
             if (pi != null) {
                 getAlarmMgr().cancel(pi);
